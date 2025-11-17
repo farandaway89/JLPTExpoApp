@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JLPT 일본어 학습 앱 - 개발계획서</title>
+    <style>
+        @page {
+            size: A3;
+            margin: 15mm;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.3;
+            margin: 0;
+            padding: 0;
+            font-size: 11px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(45deg, #E91E63, #9C27B0);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin: 0 0 8px 0;
+        }
+
+        .header p {
+            margin: 3px 0;
+            font-size: 14px;
+        }
+
+        .section {
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+            page-break-inside: avoid;
+        }
+
+        .section-title {
+            background: #E91E63;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin: -15px -15px 15px -15px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .three-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .four-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        .usecase-actor {
+            background: #fce4ec;
+            border: 1px solid #E91E63;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        .usecase-actor h4 {
+            color: #ad1457;
+            margin: 0 0 5px 0;
+            font-size: 12px;
+        }
+
+        .usecase-item {
+            background: #f3e5f5;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 3px;
+            border-left: 3px solid #E91E63;
+            font-size: 10px;
+        }
+
+        .req-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 9px;
+        }
+
+        .req-table th {
+            background: #E91E63;
+            color: white;
+            padding: 6px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .req-table td {
+            padding: 5px 6px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        .req-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .priority-high { border-left: 3px solid #f44336; }
+        .priority-medium { border-left: 3px solid #ff9800; }
+        .priority-low { border-left: 3px solid #4caf50; }
+
+        .flowchart {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .flow-step {
+            display: inline-block;
+            background: #E91E63;
+            color: white;
+            padding: 6px 12px;
+            margin: 4px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        .flow-decision {
+            background: #9C27B0;
+            color: white;
+            padding: 8px;
+            margin: 4px;
+            border-radius: 50%;
+            display: inline-flex;
+            width: 60px;
+            height: 60px;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.1;
+            font-size: 8px;
+            font-weight: bold;
+        }
+
+        .flow-arrow {
+            font-size: 16px;
+            color: #E91E63;
+            margin: 0 5px;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 9px;
+        }
+
+        .schedule-table th {
+            background: #E91E63;
+            color: white;
+            padding: 6px;
+            text-align: center;
+        }
+
+        .schedule-table td {
+            padding: 5px;
+            border: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        .day-1 { background: #fce4ec; }
+        .day-2 { background: #f3e5f5; }
+        .day-3 { background: #e8f5e8; }
+        .day-4 { background: #fff3e0; }
+        .day-5 { background: #e1f5fe; }
+
+        .table-spec {
+            background: white;
+            border: 1px solid #E91E63;
+            border-radius: 5px;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: #E91E63;
+            color: white;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .table-content {
+            padding: 10px;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 0.5fr 2.5fr;
+            gap: 8px;
+            padding: 3px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 9px;
+        }
+
+        .field-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .field-type {
+            color: #e74c3c;
+            font-family: monospace;
+        }
+
+        .field-null {
+            color: #95a5a6;
+            font-size: 8px;
+        }
+
+        .field-desc {
+            color: #7f8c8d;
+        }
+
+        .project-period {
+            background: linear-gradient(45deg, #E91E63, #ad1457);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 15px 0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .info-box {
+            background: #f3e5f5;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #E91E63;
+            margin: 8px 0;
+            font-size: 10px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #ffc107;
+            margin: 8px 0;
+            font-size: 10px;
+        }
+
+        .success-box {
+            background: #e8f5e8;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #4CAF50;
+            margin: 8px 0;
+            font-size: 10px;
+        }
+
+        .mockup-screen {
+            border: 2px solid #333;
+            border-radius: 5px;
+            padding: 10px;
+            background: #f8f9fa;
+            margin: 10px 0;
+            min-height: 200px;
+        }
+
+        .mockup-header {
+            background: #E91E63;
+            color: white;
+            padding: 6px;
+            border-radius: 3px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 10px;
+        }
+
+        h3 {
+            font-size: 14px;
+            margin: 12px 0 8px 0;
+            color: #2c3e50;
+        }
+
+        h4 {
+            font-size: 12px;
+            margin: 10px 0 6px 0;
+            color: #34495e;
+        }
+
+        .compact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .tech-stack {
+            background: #f3e5f5;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #9C27B0;
+            margin: 8px 0;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>JLPT 일본어 학습 앱</h1>
+            <p>플래시카드 기반 JLPT 단어 학습 어플리케이션 개발 계획서</p>
+            <p>React Native 크로스 플랫폼 모바일 앱</p>
+        </div>
+
+        <div class="project-period">
+            프로젝트 기간: 2025/09/23 ~ 2025/09/27 (5일간) | 개인 프로젝트 | 포트폴리오용
+        </div>
+
+        <!-- 1. 프로젝트 개요 -->
+        <div class="section">
+            <div class="section-title">1. 프로젝트 개요</div>
+
+            <div class="two-column">
+                <div>
+                    <h3>목적 및 목표</h3>
+                    <div class="info-box">
+                        <strong>주요 목적</strong><br>
+                        • JLPT 단어 학습을 위한 효과적인 모바일 앱 개발<br>
+                        • 개인 개발 역량 증명용 포트폴리오 작품<br>
+                        • 오픈소스 데이터 활용한 무료 학습 앱 제공<br>
+                        • React Native 기술 스택 숙련도 향상
+                    </div>
+
+                    <h3>타겟 사용자</h3>
+                    <div class="four-column">
+                        <div class="usecase-actor">
+                            <h4>JLPT 응시자</h4>
+                            <p>N5~N1 레벨별 체계적 학습</p>
+                        </div>
+                        <div class="usecase-actor">
+                            <h4>일본어 학습자</h4>
+                            <p>기초 단어 암기 및 복습</p>
+                        </div>
+                        <div class="usecase-actor">
+                            <h4>취업 준비생</h4>
+                            <p>일본어 자격증 취득</p>
+                        </div>
+                        <div class="usecase-actor">
+                            <h4>일반 학습자</h4>
+                            <p>여가 시간 언어 학습</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3>핵심 기능</h3>
+                    <div class="usecase-item">
+                        <strong>플래시카드 학습</strong><br>
+                        <small>JLPT 레벨별 단어 카드 학습 시스템</small>
+                    </div>
+                    <div class="usecase-item">
+                        <strong>진도 관리</strong><br>
+                        <small>학습 진도율 및 성취도 추적</small>
+                    </div>
+                    <div class="usecase-item">
+                        <strong>복습 시스템</strong><br>
+                        <small>망각곡선 기반 반복 학습 알고리즘</small>
+                    </div>
+                    <div class="usecase-item">
+                        <strong>테스트 모드</strong><br>
+                        <small>레벨별 단어 테스트 및 점수 기록</small>
+                    </div>
+
+                    <h3>기술적 특징</h3>
+                    <div class="success-box">
+                        <strong>무료 개발</strong><br>
+                        • 오픈소스 데이터 활용 (JMdict, Anki 덱)<br>
+                        • React Native 무료 프레임워크<br>
+                        • SQLite 로컬 데이터베이스<br>
+                        • APK 직접 배포 (스토어 등록비 절약)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 기술 스택 -->
+        <div class="section">
+            <div class="section-title">2. 기술 스택</div>
+
+            <div class="three-column">
+                <div class="tech-stack">
+                    <h4>프론트엔드</h4>
+                    <strong>React Native 0.72+</strong><br>
+                    • JavaScript/TypeScript<br>
+                    • React Navigation 6<br>
+                    • React Native Paper (UI)<br>
+                    • Async Storage<br>
+                    • Vector Icons
+                </div>
+
+                <div class="tech-stack">
+                    <h4>데이터베이스</h4>
+                    <strong>SQLite (로컬)</strong><br>
+                    • react-native-sqlite-storage<br>
+                    • 오프라인 사용 가능<br>
+                    • 빠른 검색 성능<br>
+                    • 용량 효율적
+                </div>
+
+                <div class="tech-stack">
+                    <h4>개발 도구</h4>
+                    <strong>개발 환경</strong><br>
+                    • VS Code<br>
+                    • Android Studio<br>
+                    • Git<br>
+                    • npm/yarn
+                </div>
+            </div>
+
+            <h3>데이터 소스</h3>
+            <div class="two-column">
+                <div class="info-box">
+                    <strong>JMdict (일본어-영어 사전)</strong><br>
+                    • 약 180,000개 단어<br>
+                    • Creative Commons 라이선스<br>
+                    • 한자, 히라가나, 카타카나 포함<br>
+                    • 품사 정보 제공
+                </div>
+                <div class="info-box">
+                    <strong>Anki 오픈소스 덱</strong><br>
+                    • JLPT N5~N1 레벨별 정제된 데이터<br>
+                    • 커뮤니티 검증 완료<br>
+                    • 예문 및 발음 정보 포함<br>
+                    • 학습 최적화된 구조
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 요구사항 명세서 -->
+        <div class="section">
+            <div class="section-title">3. 요구사항 명세서</div>
+
+            <div class="two-column">
+                <div>
+                    <h3>기능적 요구사항</h3>
+                    <table class="req-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>요구사항</th>
+                                <th>우선순위</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="priority-high">
+                                <td>FR01</td>
+                                <td>JLPT 레벨별 단어 데이터 로드</td>
+                                <td>높음</td>
+                            </tr>
+                            <tr class="priority-high">
+                                <td>FR02</td>
+                                <td>플래시카드 학습 인터페이스</td>
+                                <td>높음</td>
+                            </tr>
+                            <tr class="priority-high">
+                                <td>FR03</td>
+                                <td>학습 진도 저장 및 관리</td>
+                                <td>높음</td>
+                            </tr>
+                            <tr class="priority-medium">
+                                <td>FR04</td>
+                                <td>단어 테스트 모드</td>
+                                <td>중간</td>
+                            </tr>
+                            <tr class="priority-medium">
+                                <td>FR05</td>
+                                <td>복습 알고리즘 구현</td>
+                                <td>중간</td>
+                            </tr>
+                            <tr class="priority-low">
+                                <td>FR06</td>
+                                <td>통계 및 학습 분석</td>
+                                <td>낮음</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <h3>비기능적 요구사항</h3>
+                    <table class="req-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>요구사항</th>
+                                <th>목표값</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>NFR01</td>
+                                <td>앱 시작 시간</td>
+                                <td>3초 이내</td>
+                            </tr>
+                            <tr>
+                                <td>NFR02</td>
+                                <td>단어 검색 속도</td>
+                                <td>1초 이내</td>
+                            </tr>
+                            <tr>
+                                <td>NFR03</td>
+                                <td>오프라인 사용</td>
+                                <td>100% 지원</td>
+                            </tr>
+                            <tr>
+                                <td>NFR04</td>
+                                <td>메모리 사용량</td>
+                                <td>100MB 이하</td>
+                            </tr>
+                            <tr>
+                                <td>NFR05</td>
+                                <td>지원 안드로이드 버전</td>
+                                <td>API 21+ (5.0+)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>제약사항</h4>
+                    <div class="warning-box">
+                        • 안드로이드 전용 (iOS는 향후 확장)<br>
+                        • 오프라인 우선 설계<br>
+                        • 인터넷 연결 불필요<br>
+                        • 개인 프로젝트로 상업적 배포 없음
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. 순서도 -->
+        <div class="section">
+            <div class="section-title">4. 앱 플로우 다이어그램</div>
+
+            <div class="two-column">
+                <div>
+                    <h3>학습 플로우</h3>
+                    <div class="flowchart">
+                        <div class="flow-step">앱 시작</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-step">JLPT 레벨 선택</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-step">학습 모드 선택</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-decision">플래시카드<br>모드</div>
+                        <div style="margin: 8px 0;">
+                            <div class="flow-step" style="background: #9C27B0;">단어 표시</div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="flow-step" style="background: #673AB7;">뜻 확인</div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="flow-decision">알고있음?</div>
+                        </div>
+                        <div style="margin: 8px 0; display: flex; justify-content: space-around;">
+                            <div style="text-align: center;">
+                                <span style="color: #4CAF50; font-size: 9px; font-weight: bold;">YES</span><br>
+                                <div class="flow-step" style="background: #4CAF50; margin-top: 5px;">다음 단어</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span style="color: #f44336; font-size: 9px; font-weight: bold;">NO</span><br>
+                                <div class="flow-step" style="background: #f44336; margin-top: 5px;">복습 큐 추가</div>
+                            </div>
+                        </div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-step">진도 저장</div>
+                    </div>
+                </div>
+                <div>
+                    <h3>테스트 플로우</h3>
+                    <div class="flowchart">
+                        <div class="flow-step">테스트 모드</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-step">문제 수 설정</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-step">랜덤 단어 출제</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-decision">객관식<br>문제</div>
+                        <div style="margin: 8px 0;">
+                            <div class="flow-step" style="background: #FF5722;">4지선다 표시</div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="flow-step" style="background: #795548;">사용자 선택</div>
+                            <div class="flow-arrow">↓</div>
+                            <div class="flow-decision">정답?</div>
+                        </div>
+                        <div style="margin: 8px 0; display: flex; justify-content: space-around;">
+                            <div style="text-align: center;">
+                                <span style="color: #4CAF50; font-size: 9px; font-weight: bold;">YES</span><br>
+                                <div class="flow-step" style="background: #4CAF50; margin-top: 5px;">점수 +1</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span style="color: #f44336; font-size: 9px; font-weight: bold;">NO</span><br>
+                                <div class="flow-step" style="background: #f44336; margin-top: 5px;">오답 기록</div>
+                            </div>
+                        </div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-step">결과 화면</div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-step">통계 업데이트</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. 화면 구성도 -->
+        <div class="section">
+            <div class="section-title">5. 화면 설계</div>
+
+            <div class="two-column">
+                <div>
+                    <h3>메인 화면</h3>
+                    <div class="mockup-screen">
+                        <div class="mockup-header">JLPT 일본어 학습</div>
+                        <div style="padding: 10px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                                <div style="background: #E91E63; color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                                    <div style="font-size: 12px; font-weight: bold;">총 학습한 단어</div>
+                                    <div style="font-size: 18px; margin-top: 5px;">247개</div>
+                                </div>
+                                <div style="background: #9C27B0; color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                                    <div style="font-size: 12px; font-weight: bold;">연속 학습일</div>
+                                    <div style="font-size: 18px; margin-top: 5px;">12일</div>
+                                </div>
+                            </div>
+
+                            <div style="background: white; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                                <h4 style="margin: 0 0 10px 0; color: #E91E63;">JLPT 레벨 선택</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                                    <div style="background: #4CAF50; color: white; padding: 8px; border-radius: 4px; text-align: center; font-size: 10px;">
+                                        N5<br>기초
+                                    </div>
+                                    <div style="background: #2196F3; color: white; padding: 8px; border-radius: 4px; text-align: center; font-size: 10px;">
+                                        N4<br>초급
+                                    </div>
+                                    <div style="background: #FF9800; color: white; padding: 8px; border-radius: 4px; text-align: center; font-size: 10px;">
+                                        N3<br>중급
+                                    </div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+                                    <div style="background: #f44336; color: white; padding: 8px; border-radius: 4px; text-align: center; font-size: 10px;">
+                                        N2<br>중고급
+                                    </div>
+                                    <div style="background: #9E9E9E; color: white; padding: 8px; border-radius: 4px; text-align: center; font-size: 10px;">
+                                        N1<br>고급
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 15px;">
+                                <div style="background: #E91E63; color: white; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 8px;">
+                                    플래시카드 학습 시작
+                                </div>
+                                <div style="background: #9C27B0; color: white; padding: 12px; border-radius: 8px; text-align: center;">
+                                    단어 테스트
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3>플래시카드 화면</h3>
+                    <div class="mockup-screen">
+                        <div class="mockup-header">플래시카드 학습 - N4 레벨</div>
+                        <div style="padding: 10px;">
+                            <div style="text-align: center; margin-bottom: 15px;">
+                                <div style="font-size: 10px; color: #666;">진행률: 25/100 (25%)</div>
+                                <div style="background: #E1F5FE; height: 4px; border-radius: 2px; margin-top: 5px;">
+                                    <div style="background: #E91E63; height: 4px; width: 25%; border-radius: 2px;"></div>
+                                </div>
+                            </div>
+
+                            <div style="background: white; border: 2px solid #E91E63; border-radius: 12px; padding: 30px; text-align: center; margin-bottom: 20px;">
+                                <div style="font-size: 36px; font-weight: bold; color: #333; margin-bottom: 10px;">
+                                    食べる
+                                </div>
+                                <div style="font-size: 16px; color: #666; margin-bottom: 15px;">
+                                    たべる
+                                </div>
+                                <div style="background: #f5f5f5; padding: 8px; border-radius: 4px; font-size: 12px; color: #E91E63;">
+                                    탭해서 뜻 보기
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div style="background: #4CAF50; color: white; padding: 12px; border-radius: 8px; text-align: center; font-size: 12px;">
+                                    ✓ 알고 있어요
+                                </div>
+                                <div style="background: #f44336; color: white; padding: 12px; border-radius: 8px; text-align: center; font-size: 12px;">
+                                    ✗ 모르겠어요
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 15px; text-align: center;">
+                                <div style="background: #f0f0f0; padding: 8px; border-radius: 4px; font-size: 10px; color: #666;">
+                                    🔄 복습 필요: 3개 | ⭐ 완료: 22개
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. 개발 일정 -->
+        <div class="section">
+            <div class="section-title">6. 개발 일정</div>
+
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th style="width: 8%;">일차</th>
+                        <th style="width: 12%;">날짜</th>
+                        <th style="width: 25%;">주요 작업</th>
+                        <th style="width: 35%;">상세 내용</th>
+                        <th style="width: 20%;">산출물</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="day-1">
+                        <td><strong>1일차</strong></td>
+                        <td>09/23 (토)</td>
+                        <td>프로젝트 설정 및 데이터 준비</td>
+                        <td>React Native 프로젝트 생성, JMdict 데이터 다운로드/가공, SQLite 스키마 설계</td>
+                        <td>프로젝트 기본 구조, 단어 데이터베이스</td>
+                    </tr>
+                    <tr class="day-2">
+                        <td><strong>2일차</strong></td>
+                        <td>09/24 (일)</td>
+                        <td>기본 UI 컴포넌트 개발</td>
+                        <td>네비게이션 설정, 메인 화면, 레벨 선택 화면, 기본 스타일링</td>
+                        <td>기본 화면 구조, UI 컴포넌트</td>
+                    </tr>
+                    <tr class="day-3">
+                        <td><strong>3일차</strong></td>
+                        <td>09/25 (월)</td>
+                        <td>플래시카드 학습 기능</td>
+                        <td>단어 카드 컴포넌트, 학습 로직, 진도 저장, 복습 알고리즘</td>
+                        <td>플래시카드 학습 시스템</td>
+                    </tr>
+                    <tr class="day-4">
+                        <td><strong>4일차</strong></td>
+                        <td>09/26 (화)</td>
+                        <td>테스트 모드 및 통계</td>
+                        <td>객관식 테스트, 점수 기록, 학습 통계, 진도 관리</td>
+                        <td>테스트 시스템, 통계 화면</td>
+                    </tr>
+                    <tr class="day-5">
+                        <td><strong>5일차</strong></td>
+                        <td>09/27 (수)</td>
+                        <td>최종 완성 및 APK 빌드</td>
+                        <td>버그 수정, UI 개선, 성능 최적화, APK 빌드 및 테스트</td>
+                        <td>완성된 APK 파일, 설치 테스트</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 7. 데이터베이스 설계 -->
+        <div class="section">
+            <div class="section-title">7. 데이터베이스 설계</div>
+
+            <div class="compact-grid">
+                <div class="table-spec">
+                    <div class="table-header">단어 테이블 (words)</div>
+                    <div class="table-content">
+                        <div class="field-row" style="font-weight: bold; background: #f8f9fa;">
+                            <div>필드명</div><div>타입</div><div>NULL</div><div>설명</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-name">id</div>
+                            <div class="field-type">INTEGER PK</div>
+                            <div class="field-null">NOT NULL</div>
+                            <div class="field-desc">단어 고유 ID</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-name">kanji</div>
+                            <div class="field-type">TEXT</div>
+                            <div class="field-null">NULL</div>
+                            <div class="field-desc">한자 표기</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-name">reading</div>
+                            <div class="field-type">TEXT</div>
+                            <div class="field-null">NOT NULL</div>
+                            <div class="field-desc">히라가나 읽기</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-name">meaning</div>
+                            <div class="field-type">TEXT</div>
+                            <div class="field-null">NOT NULL</div>
+                            <div class="field-desc">한국어 뜻</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-name">jlpt_level</div>
+                            <div class="field-type">INTEGER</div>
+                            <div class="field-null">NOT NULL</div>
+                            <div class="field-desc">JLPT 레벨 (1-5)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-spec">
+                    <div class="table-header">학습 진도 (learning_progress)</div>
+                    <div class="table-content">
+                        <div class="field-row" style="font-weight: bold; background: #f8f9fa;">
+                            <div>필드명</div><div>타입</div><div>NULL</div><div>설명</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-name">word_id</div>
+                            <div class="field-type">INTEGER FK</div>
+                            <div class="field-null">NOT NULL</div>
+                            <div class="field-desc">단어 ID</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-name">learned_count</div>
+                            <div class="field-type">INTEGER</div>
+                            <div class="field-null">DEFAULT 0</div>
+                            <div class="field-desc">학습 횟수</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-name">correct_count</div>
+                            <div class="field-type">INTEGER</div>
+                            <div class="field-null">DEFAULT 0</div>
+                            <div class="field-desc">정답 횟수</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-name">last_studied</div>
+                            <div class="field-type">DATETIME</div>
+                            <div class="field-null">NULL</div>
+                            <div class="field-desc">마지막 학습 시간</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-name">next_review</div>
+                            <div class="field-type">DATETIME</div>
+                            <div class="field-null">NULL</div>
+                            <div class="field-desc">다음 복습 시간</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-spec">
+                    <div class="table-header">테스트 기록 (test_records)</div>
+                    <div class="table-content">
+                        <div class="field-row" style="font-weight: bold; background: #f8f9fa;">
+                            <div>필드명</div><div>타입</div><div>NULL</div><div>설명</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-name">id</div>
+                            <div class="field-type">INTEGER PK</div>
+                            <div class="field-null">NOT NULL</div>
+                            <div class="field-desc">테스트 기록 ID</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-name">jlpt_level</div>
+                            <div class="field-type">INTEGER</div>
+                            <div class="field-null">NOT NULL</div>
+                            <div class="field-desc">테스트 레벨</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-name">total_questions</div>
+                            <div class="field-type">INTEGER</div>
+                            <div class="field-null">NOT NULL</div>
+                            <div class="field-desc">총 문제 수</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-name">correct_answers</div>
+                            <div class="field-type">INTEGER</div>
+                            <div class="field-null">NOT NULL</div>
+                            <div class="field-desc">정답 수</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-name">test_date</div>
+                            <div class="field-type">DATETIME</div>
+                            <div class="field-null">NOT NULL</div>
+                            <div class="field-desc">테스트 일시</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 프로젝트 마무리 -->
+        <div style="background: linear-gradient(45deg, #E91E63, #ad1457); color: white; padding: 20px; border-radius: 10px; text-align: center; margin-top: 20px;">
+            <h2 style="margin: 0 0 10px 0; font-size: 20px;">프로젝트 완료 목표</h2>
+            <p style="font-size: 16px; margin: 0 0 15px 0;">
+                <strong>2025년 09월 27일까지</strong><br>
+                포트폴리오용 JLPT 일본어 학습 앱 개발 완료
+            </p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 15px; margin-top: 15px;">
+                <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px;">
+                    <div style="font-size: 14px; font-weight: bold;">플래시카드 학습</div>
+                    <div style="font-size: 12px;">JLPT 레벨별</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px;">
+                    <div style="font-size: 14px; font-weight: bold;">진도 관리</div>
+                    <div style="font-size: 12px;">복습 알고리즘</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px;">
+                    <div style="font-size: 14px; font-weight: bold;">테스트 모드</div>
+                    <div style="font-size: 12px;">객관식 문제</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px;">
+                    <div style="font-size: 14px; font-weight: bold;">APK 배포</div>
+                    <div style="font-size: 12px;">직접 설치</div>
+                </div>
+            </div>
+            <div style="margin-top: 15px; font-size: 12px; opacity: 0.9;">
+                React Native 크로스 플랫폼 앱 | 오픈소스 데이터 활용 | 개인 포트폴리오 프로젝트
+            </div>
+        </div>
+    </div>
+</body>
+</html>

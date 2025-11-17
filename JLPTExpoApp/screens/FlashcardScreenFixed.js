@@ -1,0 +1,682 @@
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Animated,
+  Alert,
+  SafeAreaView,
+} from 'react-native';
+import { Card, ProgressBar, Button, Surface, IconButton } from 'react-native-paper';
+import * as Speech from 'expo-speech';
+import DatabaseManager from '../database/DatabaseManager';
+
+// FIXED VERSION - 2025-09-26 02:12:00
+const FlashcardScreenFixed = ({ navigation, route }) => {
+  const { jlptLevel } = route.params;
+  const [words, setWords] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [flipAnimation] = useState(new Animated.Value(0));
+  const [correctCount, setCorrectCount] = useState(0);
+  const [incorrectCount, setIncorrectCount] = useState(0);
+  const [isFlipping, setIsFlipping] = useState(false);
+
+  useEffect(() => {
+    loadWords();
+  }, [jlptLevel]);
+
+  useEffect(() => {
+    if (words.length > 0) {
+      setProgress((currentIndex + 1) / words.length);
+    }
+  }, [currentIndex, words.length]);
+
+  const loadWords = async () => {
+    try {
+      console.log(`Loading words for JLPT level: ${jlptLevel}`);
+      const wordList = await DatabaseManager.getWordsByLevel(jlptLevel);
+      console.log(`Loaded ${wordList.length} words`);
+
+      if (wordList.length === 0) {
+        Alert.alert(
+          '알림',
+          '해당 레벨의 단어가 없습니다. 잠시 후 다시 시도해주세요.',
+          [
+            { text: '다시 시도', onPress: () => setTimeout(loadWords, 1000) },
+            { text: '돌아가기', onPress: () => navigation.goBack() }
+          ]
+        );
+        return;
+      }
+      setWords(wordList.slice(0, 20));
+    } catch (error) {
+      console.error('Error loading words:', error);
+      Alert.alert('오류', '단어를 불러올 수 없습니다.');
+    }
+  };
+
+  const flipCard = () => {
+    console.log('🃏 CARD FLIP ATTEMPTED - FIXED VERSION');
+    if (isFlipping) {
+      console.log('🚫 CARD FLIP BLOCKED - isFlipping is true');
+      return;
+    }
+
+    console.log('✅ CARD FLIP STARTING');
+    setIsFlipping(true);
+    Animated.timing(flipAnimation, {
+      toValue: showAnswer ? 0 : 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      console.log('✅ CARD FLIP COMPLETED');
+      setIsFlipping(false);
+    });
+    setShowAnswer(!showAnswer);
+  };
+
+  const handleTTSPress = (text) => {
+    console.log('🔊 FIXED TTS BUTTON PRESSED');
+    speakJapanese(text);
+  };
+
+  const handleAnswer = async (isCorrect) => {
+    const currentWord = words[currentIndex];
+
+    await DatabaseManager.updateLearningProgress(currentWord.id, isCorrect);
+
+    if (isCorrect) {
+      setCorrectCount(prev => prev + 1);
+    } else {
+      setIncorrectCount(prev => prev + 1);
+    }
+
+    if (currentIndex < words.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+      setShowAnswer(false);
+      flipAnimation.setValue(0);
+    } else {
+      showSessionResults();
+    }
+  };
+
+  const showSessionResults = () => {
+    const total = correctCount + incorrectCount + 1;
+    const accuracy = Math.round((correctCount / total) * 100);
+
+    Alert.alert(
+      '학습 완료! 🎉',
+      `총 ${total}개 단어 학습\n정답: ${correctCount}개\n오답: ${incorrectCount + 1}개\n정확도: ${accuracy}%`,
+      [
+        { text: '홈으로', onPress: () => navigation.navigate('Home') },
+        { text: '다시 학습', onPress: resetSession },
+      ]
+    );
+  };
+
+  const resetSession = () => {
+    setCurrentIndex(0);
+    setShowAnswer(false);
+    setCorrectCount(0);
+    setIncorrectCount(0);
+    flipAnimation.setValue(0);
+    loadWords();
+  };
+
+  const speakJapanese = async (text) => {
+    console.log('🔊 JAPANESE TTS STARTING');
+
+    try {
+      console.log('=== Japanese TTS Enhanced Debug ===');
+      console.log('Text to speak:', text);
+
+      const voices = await Speech.getAvailableVoicesAsync();
+      console.log('Available voices:', voices.length);
+
+      const japaneseVoices = voices.filter(voice =>
+        voice.language.includes('ja') ||
+        voice.language.includes('JP') ||
+        voice.name.toLowerCase().includes('japan')
+      );
+      console.log('Japanese voices found:', japaneseVoices.length);
+      japaneseVoices.forEach(voice => console.log('Japanese voice:', voice.name, voice.language));
+
+      if (japaneseVoices.length > 0) {
+        try {
+          const voice = japaneseVoices[0];
+          console.log(`Trying with Japanese voice: ${voice.name} (${voice.language})`);
+
+          await Speech.speak(text, {
+            voice: voice.identifier,
+            pitch: 1.0,
+            rate: 0.8,
+            volume: 1.0,
+          });
+
+          console.log('SUCCESS: Japanese voice worked!');
+          return;
+        } catch (voiceError) {
+          console.log('Japanese voice failed:', voiceError.message);
+        }
+      }
+
+      const languageCodes = ['ja-JP', 'ja', 'jp-JP'];
+      for (const lang of languageCodes) {
+        try {
+          console.log(`Trying language: ${lang}`);
+          await Speech.speak(text, {
+            language: lang,
+            pitch: 1.0,
+            rate: 0.8,
+            volume: 1.0,
+          });
+          console.log(`SUCCESS with language: ${lang}`);
+          return;
+        } catch (langError) {
+          console.log(`Language ${lang} failed:`, langError.message);
+        }
+      }
+
+      console.log('Trying default TTS...');
+      await Speech.speak(text, {
+        pitch: 1.0,
+        rate: 0.8,
+        volume: 1.0,
+      });
+
+    } catch (error) {
+      console.error('All Japanese TTS methods failed:', error);
+    }
+  };
+
+  const speakKorean = (text) => {
+    try {
+      console.log('Korean TTS - Text:', text);
+
+      Speech.speak(text, {
+        language: 'ko-KR',
+        pitch: 1.0,
+        rate: 0.8,
+      });
+
+      console.log('Korean TTS started');
+    } catch (error) {
+      console.error('Korean TTS Error:', error);
+    }
+  };
+
+  const speakEnglish = async (text) => {
+    console.log('🔊 ENGLISH TTS STARTING');
+
+    try {
+      console.log('=== English TTS Debug ===');
+      console.log('Text to speak:', text);
+
+      const voices = await Speech.getAvailableVoicesAsync();
+      console.log('Available voices:', voices.length);
+
+      const englishVoices = voices.filter(voice =>
+        voice.language.includes('en') ||
+        voice.language.includes('EN') ||
+        voice.name.toLowerCase().includes('english')
+      );
+      console.log('English voices found:', englishVoices.length);
+      englishVoices.forEach(voice => console.log('English voice:', voice.name, voice.language));
+
+      if (englishVoices.length > 0) {
+        try {
+          const voice = englishVoices[0];
+          console.log(`Trying with English voice: ${voice.name} (${voice.language})`);
+
+          await Speech.speak(text, {
+            voice: voice.identifier,
+            pitch: 1.0,
+            rate: 0.9,
+            volume: 1.0,
+          });
+
+          console.log('SUCCESS: English voice worked!');
+          return;
+        } catch (voiceError) {
+          console.log('English voice failed:', voiceError.message);
+        }
+      }
+
+      const languageCodes = ['en-US', 'en-GB', 'en'];
+      for (const lang of languageCodes) {
+        try {
+          console.log(`Trying language: ${lang}`);
+          await Speech.speak(text, {
+            language: lang,
+            pitch: 1.0,
+            rate: 0.9,
+            volume: 1.0,
+          });
+          console.log(`SUCCESS with language: ${lang}`);
+          return;
+        } catch (langError) {
+          console.log(`Language ${lang} failed:`, langError.message);
+        }
+      }
+
+      console.log('Trying default TTS...');
+      await Speech.speak(text, {
+        pitch: 1.0,
+        rate: 0.9,
+        volume: 1.0,
+      });
+
+    } catch (error) {
+      console.error('All English TTS methods failed:', error);
+    }
+  };
+
+  if (words.length === 0) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>단어를 불러오는 중...</Text>
+      </View>
+    );
+  }
+
+  const currentWord = words[currentIndex];
+  const frontOpacity = flipAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+  });
+  const backOpacity = flipAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+      {/* Progress Section */}
+      <View style={styles.progressSection}>
+        <Text style={styles.progressText}>
+          {currentIndex + 1} / {words.length}
+        </Text>
+        <ProgressBar
+          progress={progress}
+          color="#E91E63"
+          style={styles.progressBar}
+        />
+        <View style={styles.counters}>
+          <Text style={styles.correctCount}>✓ {correctCount}</Text>
+          <Text style={styles.incorrectCount}>✗ {incorrectCount}</Text>
+        </View>
+      </View>
+
+      {/* Flashcard */}
+      <View style={styles.cardContainer}>
+        <TouchableOpacity
+          onPress={flipCard}
+          style={styles.cardTouchable}
+          disabled={isFlipping}
+          activeOpacity={1}
+        >
+          {!showAnswer ? (
+            // Front of card
+            <Animated.View style={[styles.card, styles.cardFront, { opacity: frontOpacity }]}>
+              <View style={styles.cardContent}>
+                <Text style={styles.kanji}>{currentWord.kanji || currentWord.reading}</Text>
+                {currentWord.kanji && (
+                  <Text style={styles.reading}>{currentWord.reading}</Text>
+                )}
+                <Text style={styles.partOfSpeech}>{currentWord.part_of_speech}</Text>
+                <Text style={styles.tapToFlip}>탭해서 뜻 보기</Text>
+              </View>
+            </Animated.View>
+          ) : (
+            // Back of card
+            <Animated.View style={[styles.card, styles.cardBack, { opacity: backOpacity }]}>
+              <View style={styles.cardContent}>
+                <View style={styles.meaningContainer}>
+                  <Text style={styles.meaning}>{currentWord.meaning}</Text>
+                  <TouchableOpacity
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      speakKorean(currentWord.meaning);
+                    }}
+                    style={styles.smallPronunciationButton}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={{fontSize: 20, color: '#E91E63'}}>🔊</Text>
+                  </TouchableOpacity>
+                </View>
+                {currentWord.english && (
+                  <View style={styles.englishContainer}>
+                    <Text style={styles.english}>{currentWord.english}</Text>
+                    <TouchableOpacity
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        speakEnglish(currentWord.english);
+                      }}
+                      style={styles.englishPronunciationButton}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={{fontSize: 18, color: '#4CAF50'}}>🔊</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+                {currentWord.example && (
+                  <View style={styles.exampleSection}>
+                    <View style={styles.exampleHeader}>
+                      <Text style={styles.exampleLabel}>예문:</Text>
+                      <TouchableOpacity
+                        onPress={(e) => {
+                          e.stopPropagation();
+                          speakJapanese(currentWord.example);
+                        }}
+                        style={styles.examplePronunciationButton}
+                        activeOpacity={0.7}
+                      >
+                        <Text style={{fontSize: 18, color: '#2196F3'}}>🔊</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <Text style={styles.example}>{currentWord.example}</Text>
+                    {currentWord.example_meaning && (
+                      <Text style={styles.exampleMeaning}>
+                        {currentWord.example_meaning}
+                      </Text>
+                    )}
+                  </View>
+                )}
+              </View>
+            </Animated.View>
+          )}
+        </TouchableOpacity>
+      </View>
+
+      {/* TTS Button - Outside card */}
+      <View style={styles.ttsContainer}>
+        <TouchableOpacity
+          style={styles.mainTtsButton}
+          onPress={() => handleTTSPress(currentWord.kanji || currentWord.reading)}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.mainTtsIcon}>🔊 일본어 발음</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Answer Buttons */}
+      {showAnswer && (
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.answerButton, styles.incorrectButton]}
+            onPress={() => handleAnswer(false)}>
+            <Text style={styles.buttonText}>✗ 모르겠어요</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.answerButton, styles.correctButton]}
+            onPress={() => handleAnswer(true)}>
+            <Text style={styles.buttonText}>✓ 알고 있어요</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* Hint when card is not flipped */}
+      {!showAnswer && (
+        <View style={styles.hintContainer}>
+          <Surface style={styles.hint}>
+            <Text style={styles.hintText}>
+              💡 카드를 탭해서 뜻을 확인하세요
+            </Text>
+          </Surface>
+        </View>
+      )}
+    </View>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+    padding: 16,
+    paddingBottom: 40,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  progressSection: {
+    marginBottom: 20,
+  },
+  progressText: {
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+  },
+  progressBar: {
+    height: 8,
+    borderRadius: 4,
+    marginBottom: 12,
+  },
+  counters: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 20,
+  },
+  correctCount: {
+    color: '#4CAF50',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  incorrectCount: {
+    color: '#f44336',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  cardContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  cardTouchable: {
+    height: 300,
+  },
+  card: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'white',
+    borderRadius: 16,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  cardFront: {
+    backgroundColor: '#FFFFFF',
+  },
+  cardBack: {
+    backgroundColor: '#F8F9FA',
+  },
+  cardBackgroundTouch: {
+    flex: 1,
+  },
+  cardContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  kanji: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+  },
+  reading: {
+    fontSize: 24,
+    color: '#666',
+    marginBottom: 8,
+  },
+  partOfSpeech: {
+    fontSize: 14,
+    color: '#999',
+    backgroundColor: '#E91E63',
+    color: 'white',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  tapToFlip: {
+    fontSize: 14,
+    color: '#E91E63',
+    fontStyle: 'italic',
+  },
+  meaningContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  meaning: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#E91E63',
+    textAlign: 'center',
+    flex: 1,
+  },
+  smallPronunciationButton: {
+    backgroundColor: 'rgba(233, 30, 99, 0.1)',
+    borderRadius: 20,
+    marginLeft: 8,
+    padding: 8,
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  englishContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  english: {
+    fontSize: 18,
+    color: '#666',
+    textAlign: 'center',
+    flex: 1,
+  },
+  englishPronunciationButton: {
+    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+    borderRadius: 20,
+    marginLeft: 8,
+    padding: 8,
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  exampleSection: {
+    marginTop: 20,
+    padding: 16,
+    backgroundColor: '#F0F8FF',
+    borderRadius: 8,
+    width: '100%',
+  },
+  exampleHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  exampleLabel: {
+    fontSize: 12,
+    color: '#999',
+    flex: 1,
+  },
+  examplePronunciationButton: {
+    backgroundColor: 'rgba(33, 150, 243, 0.1)',
+    borderRadius: 20,
+    marginLeft: 8,
+    padding: 8,
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  example: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 4,
+  },
+  exampleMeaning: {
+    fontSize: 14,
+    color: '#666',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  answerButton: {
+    flex: 1,
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  correctButton: {
+    backgroundColor: '#4CAF50',
+  },
+  incorrectButton: {
+    backgroundColor: '#f44336',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  hintContainer: {
+    alignItems: 'center',
+  },
+  hint: {
+    padding: 12,
+    borderRadius: 8,
+    elevation: 2,
+  },
+  hintText: {
+    fontSize: 14,
+    color: '#666',
+  },
+  ttsContainer: {
+    alignItems: 'center',
+    marginVertical: 16,
+  },
+  mainTtsButton: {
+    backgroundColor: '#E91E63',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 25,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  mainTtsIcon: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
+
+export default FlashcardScreenFixed;
