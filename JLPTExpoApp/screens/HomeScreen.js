@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Card, Title, Paragraph, Button, Surface } from 'react-native-paper';
 import DatabaseManager from '../database/DatabaseManager';
+import { upcomingEvents, formatEventDate } from '../data/events';
 
 const HomeScreen = ({ navigation }) => {
   const [statistics, setStatistics] = useState({
@@ -42,6 +43,26 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.statLabel}>연속 학습일</Text>
         </Surface>
       </View>
+
+      {/* Upcoming Events */}
+      <Card style={styles.eventPreviewCard}>
+        <Card.Content>
+          <Title style={styles.eventPreviewTitle}>🗓️ 다가오는 오프라인 행사</Title>
+          {upcomingEvents.slice(0, 2).map((event) => (
+            <View key={event.id} style={styles.eventPreviewItem}>
+              <Text style={styles.eventPreviewRegion}>{event.region}</Text>
+              <Text style={styles.eventPreviewDate}>
+                {formatEventDate(event.date)} · {event.venue}
+              </Text>
+            </View>
+          ))}
+          <TouchableOpacity
+            style={styles.eventPreviewButton}
+            onPress={() => navigation.navigate('Events')}>
+            <Text style={styles.eventPreviewButtonText}>전체 행사 일정 보기 →</Text>
+          </TouchableOpacity>
+        </Card.Content>
+      </Card>
 
       {/* Progress Card */}
       <Card style={styles.progressCard}>
@@ -162,6 +183,43 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     marginTop: 4,
+  },
+  eventPreviewCard: {
+    marginBottom: 16,
+    elevation: 4,
+    borderLeftWidth: 4,
+    borderLeftColor: '#9C27B0',
+  },
+  eventPreviewTitle: {
+    color: '#9C27B0',
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  eventPreviewItem: {
+    marginBottom: 8,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEE',
+  },
+  eventPreviewRegion: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#E91E63',
+  },
+  eventPreviewDate: {
+    fontSize: 13,
+    color: '#666',
+    marginTop: 2,
+  },
+  eventPreviewButton: {
+    marginTop: 4,
+    paddingVertical: 8,
+    alignItems: 'center',
+  },
+  eventPreviewButtonText: {
+    color: '#9C27B0',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
   progressCard: {
     marginBottom: 16,

@@ -11,6 +11,7 @@ import FlashcardScreen from './screens/FlashcardScreenFixed';
 import TestScreen from './screens/TestScreen';
 import TestResultScreen from './screens/TestResultScreen';
 import StatisticsScreen from './screens/StatisticsScreen';
+import EventScreen from './screens/EventScreen';
 
 const Stack = createStackNavigator();
 
@@ -72,6 +73,11 @@ export default function App() {
             name="Statistics"
             component={StatisticsScreen}
             options={{ title: '학습 통계' }}
+          />
+          <Stack.Screen
+            name="Events"
+            component={EventScreen}
+            options={{ title: '행사 안내' }}
           />
         </Stack.Navigator>
       </NavigationContainer>
