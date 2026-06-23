@@ -47,7 +47,7 @@ const HomeScreen = ({ navigation }) => {
       {/* Upcoming Events */}
       <Card style={styles.eventPreviewCard}>
         <Card.Content>
-          <Title style={styles.eventPreviewTitle}>🗓️ 다가오는 오프라인 행사</Title>
+          <Title style={styles.eventPreviewTitle}>다가오는 오프라인 행사</Title>
           {upcomingEvents.slice(0, 2).map((event) => (
             <View key={event.id} style={styles.eventPreviewItem}>
               <Text style={styles.eventPreviewRegion}>{event.region}</Text>
@@ -89,21 +89,21 @@ const HomeScreen = ({ navigation }) => {
         <TouchableOpacity
           style={[styles.actionButton, styles.primaryButton]}
           onPress={() => navigateToLevelSelect('flashcard')}>
-          <Text style={styles.buttonText}>📚 플래시카드 학습</Text>
+          <Text style={styles.buttonText}>플래시카드 학습</Text>
           <Text style={styles.buttonSubtext}>단어 카드로 학습하기</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.actionButton, styles.secondaryButton]}
           onPress={() => navigateToLevelSelect('test')}>
-          <Text style={styles.buttonText}>📝 단어 테스트</Text>
+          <Text style={styles.buttonText}>단어 테스트</Text>
           <Text style={styles.buttonSubtext}>실력 확인하기</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.actionButton, styles.tertiaryButton]}
           onPress={() => navigation.navigate('Statistics')}>
-          <Text style={styles.buttonText}>📊 학습 통계</Text>
+          <Text style={styles.buttonText}>학습 통계</Text>
           <Text style={styles.buttonSubtext}>진도 확인하기</Text>
         </TouchableOpacity>
       </View>

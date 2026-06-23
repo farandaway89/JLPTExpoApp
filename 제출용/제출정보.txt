@@ -1,0 +1,4 @@
+JLPT Expo App
+프로젝트 기간: 2026.06.14 ~ 2026.06.23 (10일)
+GitHub: https://github.com/farandaway89/JLPTExpoApp
+Google Drive: https://drive.google.com/drive/u/0/folders/16rjnnpjEfpLUgV9c2TN3zRlegIYk7mYW

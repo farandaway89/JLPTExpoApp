@@ -99,7 +99,7 @@ const LevelSelectScreen = ({ navigation, route }) => {
       {/* Info Card */}
       <Card style={styles.infoCard}>
         <Card.Content>
-          <Title style={styles.infoTitle}>💡 학습 팁</Title>
+          <Title style={styles.infoTitle}>학습 팁</Title>
           <Paragraph style={styles.infoText}>
             • N5부터 시작해서 단계적으로 학습하세요{'\n'}
             • 매일 조금씩이라도 꾸준히 학습하세요{'\n'}

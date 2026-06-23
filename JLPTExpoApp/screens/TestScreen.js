@@ -224,7 +224,7 @@ const TestScreen = ({ navigation, route }) => {
               activeOpacity={0.7}
             >
               <View style={styles.pronunciationButton}>
-                <Text style={{fontSize: 20, color: '#E91E63'}}>🔊</Text>
+                <Text style={{fontSize: 14, color: '#E91E63'}}>재생</Text>
               </View>
               <Text style={styles.pronunciationLabel}>발음 듣기</Text>
             </TouchableOpacity>
@@ -271,7 +271,7 @@ const TestScreen = ({ navigation, route }) => {
         <Card style={styles.exampleCard}>
           <Card.Content>
             <View style={styles.exampleHeader}>
-              <Text style={styles.exampleLabel}>💡 예문 참고</Text>
+              <Text style={styles.exampleLabel}>예문 참고</Text>
               <TouchableOpacity
                 onPress={() => {
                   console.log('Test example pronunciation button pressed');
@@ -280,7 +280,7 @@ const TestScreen = ({ navigation, route }) => {
                 style={styles.examplePronunciationButton}
                 activeOpacity={0.7}
               >
-                <Text style={{fontSize: 16, color: '#2196F3'}}>🔊</Text>
+                <Text style={{fontSize: 14, color: '#2196F3'}}>재생</Text>
               </TouchableOpacity>
             </View>
             <Text style={styles.example}>{currentWord.example}</Text>

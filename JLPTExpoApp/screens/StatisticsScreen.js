@@ -204,7 +204,7 @@ const StatisticsScreen = ({ navigation }) => {
       {/* Study Tips */}
       <Card style={styles.tipsCard}>
         <Card.Content>
-          <Title style={styles.cardTitle}>📚 학습 팁</Title>
+          <Title style={styles.cardTitle}>학습 팁</Title>
           <View style={styles.tipsList}>
             <Text style={styles.tipItem}>
               • 매일 조금씩이라도 꾸준히 학습하세요

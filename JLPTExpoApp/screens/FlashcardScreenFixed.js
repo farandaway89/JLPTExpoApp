@@ -108,7 +108,7 @@ const FlashcardScreenFixed = ({ navigation, route }) => {
     const accuracy = Math.round((correctCount / total) * 100);
 
     Alert.alert(
-      '학습 완료! 🎉',
+      '학습 완료',
       `총 ${total}개 단어 학습\n정답: ${correctCount}개\n오답: ${incorrectCount + 1}개\n정확도: ${accuracy}%`,
       [
         { text: '홈으로', onPress: () => navigation.navigate('Home') },
@@ -345,7 +345,7 @@ const FlashcardScreenFixed = ({ navigation, route }) => {
                     style={styles.smallPronunciationButton}
                     activeOpacity={0.7}
                   >
-                    <Text style={{fontSize: 20, color: '#E91E63'}}>🔊</Text>
+                    <Text style={{fontSize: 14, color: '#E91E63'}}>재생</Text>
                   </TouchableOpacity>
                 </View>
                 {currentWord.english && (
@@ -359,7 +359,7 @@ const FlashcardScreenFixed = ({ navigation, route }) => {
                       style={styles.englishPronunciationButton}
                       activeOpacity={0.7}
                     >
-                      <Text style={{fontSize: 18, color: '#4CAF50'}}>🔊</Text>
+                      <Text style={{fontSize: 14, color: '#4CAF50'}}>재생</Text>
                     </TouchableOpacity>
                   </View>
                 )}
@@ -375,7 +375,7 @@ const FlashcardScreenFixed = ({ navigation, route }) => {
                         style={styles.examplePronunciationButton}
                         activeOpacity={0.7}
                       >
-                        <Text style={{fontSize: 18, color: '#2196F3'}}>🔊</Text>
+                        <Text style={{fontSize: 14, color: '#2196F3'}}>재생</Text>
                       </TouchableOpacity>
                     </View>
                     <Text style={styles.example}>{currentWord.example}</Text>
@@ -399,7 +399,7 @@ const FlashcardScreenFixed = ({ navigation, route }) => {
           onPress={() => handleTTSPress(currentWord.kanji || currentWord.reading)}
           activeOpacity={0.7}
         >
-          <Text style={styles.mainTtsIcon}>🔊 일본어 발음</Text>
+          <Text style={styles.mainTtsIcon}>일본어 발음</Text>
         </TouchableOpacity>
       </View>
 
@@ -424,7 +424,7 @@ const FlashcardScreenFixed = ({ navigation, route }) => {
         <View style={styles.hintContainer}>
           <Surface style={styles.hint}>
             <Text style={styles.hintText}>
-              💡 카드를 탭해서 뜻을 확인하세요
+              카드를 탭해서 뜻을 확인하세요
             </Text>
           </Surface>
         </View>

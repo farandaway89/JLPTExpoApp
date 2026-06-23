@@ -21,11 +21,11 @@ const TestResultScreen = ({ navigation, route }) => {
   const incorrectAnswers = totalQuestions - correctAnswers;
 
   const getGrade = (accuracy) => {
-    if (accuracy >= 90) return { grade: 'A', color: '#4CAF50', emoji: '🏆' };
-    if (accuracy >= 80) return { grade: 'B', color: '#2196F3', emoji: '👍' };
-    if (accuracy >= 70) return { grade: 'C', color: '#FF9800', emoji: '👌' };
-    if (accuracy >= 60) return { grade: 'D', color: '#FFC107', emoji: '😊' };
-    return { grade: 'F', color: '#f44336', emoji: '😅' };
+    if (accuracy >= 90) return { grade: 'A', color: '#4CAF50' };
+    if (accuracy >= 80) return { grade: 'B', color: '#2196F3' };
+    if (accuracy >= 70) return { grade: 'C', color: '#FF9800' };
+    if (accuracy >= 60) return { grade: 'D', color: '#FFC107' };
+    return { grade: 'F', color: '#f44336' };
   };
 
   const gradeInfo = getGrade(accuracy);
@@ -53,8 +53,7 @@ const TestResultScreen = ({ navigation, route }) => {
       {/* Result Header */}
       <Card style={styles.resultCard}>
         <Card.Content style={styles.resultContent}>
-          <Text style={styles.resultEmoji}>{gradeInfo.emoji}</Text>
-          <Text style={styles.resultTitle}>테스트 완료!</Text>
+          <Text style={styles.resultTitle}>테스트 완료</Text>
           <Text style={[styles.grade, { color: gradeInfo.color }]}>
             {gradeInfo.grade}
           </Text>
@@ -85,10 +84,10 @@ const TestResultScreen = ({ navigation, route }) => {
         <Card.Content>
           <Title style={styles.messageTitle}>
             {accuracy >= 80
-              ? '훌륭합니다! 🎉'
+              ? '훌륭합니다'
               : accuracy >= 60
-              ? '잘했어요! 👏'
-              : '더 노력해요! 💪'}
+              ? '잘했습니다'
+              : '더 연습이 필요합니다'}
           </Title>
           <Paragraph style={styles.messageText}>
             {accuracy >= 80

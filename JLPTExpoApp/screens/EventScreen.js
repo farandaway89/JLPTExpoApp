@@ -37,7 +37,7 @@ const EventScreen = ({ navigation }) => {
             </View>
 
             <Title style={styles.eventDate}>{formatEventDate(event.date)}</Title>
-            <Paragraph style={styles.venue}>📍 {event.venue}</Paragraph>
+            <Paragraph style={styles.venue}>{event.venue}</Paragraph>
             <Paragraph style={styles.description}>{event.description}</Paragraph>
 
             <TouchableOpacity
