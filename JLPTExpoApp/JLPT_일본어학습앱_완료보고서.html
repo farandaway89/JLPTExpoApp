@@ -306,6 +306,15 @@
         <div class="section">
             <div class="section-title">1. 프로젝트 개요</div>
 
+            <div class="info-box" style="margin-bottom: 16px;">
+                <h3 style="margin-top: 0; color: #E91E63;">📌 프로젝트 배경 (과제 주제 연계)</h3>
+                <p style="margin-bottom: 0;">
+                    본 프로젝트는 <strong>전국 각 지역을 순회하는 JLPT 오프라인 설명회·박람회</strong> 참가 수험생을 위한 단어 학습 서비스입니다.
+                    서울, 부산, 대구, 광주, 대전 등 지역별 JLPT 행사 현장에서 Wi-Fi 없이도 N5~N1 단어를 학습·테스트할 수 있도록
+                    <strong>오프라인 우선</strong>으로 설계하였습니다.
+                </p>
+            </div>
+
             <div class="two-column">
                 <div class="info-box">
                     <h3 style="margin-top: 0; color: #E91E63;">📋 프로젝트 정보</h3>
@@ -323,6 +332,7 @@
                     <p>✅ 진도 관리 및 복습 알고리즘 구현</p>
                     <p>✅ 단어 테스트 및 통계 기능 완성</p>
                     <p>✅ 다국어 음성 지원 및 UI/UX 개선</p>
+                    <p>✅ 지역별 오프라인 행사 안내 화면 추가 (과제 주제 연계)</p>
                 </div>
             </div>
 
@@ -355,8 +365,21 @@
             <div class="section-title">2. 계획 대비 추가 개발 내용</div>
 
             <p style="font-size: 16px; color: #E91E63; font-weight: bold;">
-                기존 개발계획서 대비 <span class="highlight">4가지 주요 기능이 추가</span>되어 더욱 완성도 높은 앱으로 발전하였습니다.
+                기존 개발계획서 대비 <span class="highlight">5가지 주요 기능이 추가</span>되어 더욱 완성도 높은 앱으로 발전하였습니다.
             </p>
+
+            <div class="feature-card" style="margin-bottom: 16px;">
+                <h4>🗓️ 0. 지역별 오프라인 행사 안내 (과제 주제 연계)</h4>
+                <div class="improvement-badge">신규 기능</div>
+                <p><strong>구현 내용:</strong></p>
+                <ul>
+                    <li>과제 주제 <strong>「지역별 찾아가는 오프라인 행사」</strong>에 맞춘 행사 안내 화면 추가</li>
+                    <li>서울·부산·대구·광주·대전 5개 지역 JLPT 행사 일정, 장소, 대상 레벨 표시</li>
+                    <li>홈 화면에 다가오는 행사 2건 미리보기</li>
+                    <li>행사별 추천 JLPT 레벨로 바로 플래시카드 학습 시작</li>
+                </ul>
+                <p><strong>효과:</strong> 단순 학습 앱을 넘어 지역 오프라인 행사와 연계된 통합 서비스로 확장</p>
+            </div>
 
             <div class="two-column">
                 <div class="feature-card">
@@ -1001,6 +1024,38 @@ calculateNextReview(difficulty) {
         <!-- 7. 프로젝트 성과 및 결론 -->
         <div class="section">
             <div class="section-title">7. 프로젝트 성과 및 결론</div>
+
+            <div class="subsection-title">7.0 과제 요건 충족</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>과제 요건</th>
+                        <th>충족 내용</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>웹 프로젝트 (HTML/CSS, JS, React)</td>
+                        <td>Expo Web + React Native (React 기반), 반응형 UI</td>
+                    </tr>
+                    <tr>
+                        <td>10일 개발</td>
+                        <td>기획·구현·문서화·제출 완료</td>
+                    </tr>
+                    <tr>
+                        <td>Git 활용</td>
+                        <td>GitHub 저장소 관리 및 제출 (<a href="https://github.com/farandaway89/JLPTExpoApp">JLPTExpoApp</a>)</td>
+                    </tr>
+                    <tr>
+                        <td>지역별 오프라인 행사 주제</td>
+                        <td>행사 안내 화면 + 오프라인 학습 기능</td>
+                    </tr>
+                    <tr>
+                        <td>작동 가능한 결과물</td>
+                        <td>플래시카드, 테스트, 통계, 행사 안내 동작</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <div class="subsection-title">7.1 목표 달성도</div>
             <table>

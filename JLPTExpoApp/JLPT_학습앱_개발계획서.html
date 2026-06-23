@@ -354,16 +354,50 @@
         <div class="section">
             <div class="section-title">1. 프로젝트 개요</div>
 
+            <div class="info-box" style="margin-bottom: 12px;">
+                <strong>프로젝트 배경 (과제 주제 연계)</strong><br>
+                본 프로젝트는 <strong>전국 각 지역을 순회하는 JLPT 오프라인 설명회·박람회</strong> 참가 수험생을 위한 단어 학습 서비스입니다.
+                서울, 부산, 대구, 광주, 대전 등 지역별로 개최되는 JLPT 행사에서는 수험생들이 현장에서 즉시 학습할 수 있는 도구가 필요하지만,
+                행사장 Wi-Fi 환경이 불안정한 경우가 많습니다. 이에 본 앱은 <strong>오프라인 우선 설계</strong>로 인터넷 연결 없이도
+                JLPT N5~N1 단어를 학습·테스트할 수 있도록 구현하였습니다.
+            </div>
+
             <div class="two-column">
                 <div>
                     <h3>목적 및 목표</h3>
                     <div class="info-box">
                         <strong>주요 목적</strong><br>
+                        • 지역별 찾아가는 JLPT 오프라인 행사 참가자에게 <strong>현장 즉시 학습</strong> 환경 제공<br>
+                        • React, JavaScript, Git 등 학습 기술을 활용한 <strong>작동 가능한 웹/모바일 프로젝트</strong> 완성<br>
+                        • 기획 → 구현 → 제출까지 <strong>개인 단위 end-to-end</strong> 개발 경험 축적<br>
+                        • 행사 일정 안내와 단어 학습을 하나의 앱에 통합한 <strong>실용적 서비스</strong> 구현<br>
                         • JLPT 단어 학습을 위한 효과적인 모바일 앱 개발<br>
-                        • 개인 개발 역량 증명용 포트폴리오 작품<br>
-                        • 오픈소스 데이터 활용한 무료 학습 앱 제공<br>
                         • React Native 기술 스택 숙련도 향상
                     </div>
+
+                    <h3>과제 타겟 사용자</h3>
+                    <table class="req-table">
+                        <thead>
+                            <tr>
+                                <th>사용자</th>
+                                <th>니즈</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>JLPT 오프라인 행사 참가자</td>
+                                <td>행사장에서 바로 단어 복습</td>
+                            </tr>
+                            <tr>
+                                <td>지역 수험생 (수도권 외)</td>
+                                <td>원거리 이동 전·후 학습 연속성 유지</td>
+                            </tr>
+                            <tr>
+                                <td>오프라인 환경 학습자</td>
+                                <td>Wi-Fi 없이 플래시카드·테스트 이용</td>
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <h3>타겟 사용자</h3>
                     <div class="four-column">
@@ -388,6 +422,10 @@
 
                 <div>
                     <h3>핵심 기능</h3>
+                    <div class="usecase-item">
+                        <strong>행사 안내</strong><br>
+                        <small>지역별 JLPT 오프라인 행사 일정·장소·추천 레벨 안내</small>
+                    </div>
                     <div class="usecase-item">
                         <strong>플래시카드 학습</strong><br>
                         <small>JLPT 레벨별 단어 카드 학습 시스템</small>
